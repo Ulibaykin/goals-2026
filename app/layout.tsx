@@ -1,3 +1,8 @@
+export const metadata = {
+  title: 'Goals 2026',
+  description: 'Личный трекер целей на 2026 год',
+}
+
 export default function RootLayout({
   children,
 }: {
@@ -5,9 +10,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru">
-      <body style={{ margin: 0, fontFamily: 'system-ui, sans-serif' }}>
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
   )
 }
