@@ -15,8 +15,10 @@ function formatPhone(value: string) {
   return result
 }
 
+type Step = 'phone' | 'code' | 'goals'
+
 export default function Page() {
-  const [step, setStep] = useState<'phone' | 'code'>('phone')
+  const [step, setStep] = useState<Step>('phone')
   const [phone, setPhone] = useState('+7')
   const [code, setCode] = useState('')
   const [timer, setTimer] = useState(60)
@@ -51,13 +53,14 @@ export default function Page() {
       return
     }
 
-    alert('Следующий экран — цели')
+    setStep('goals')
   }
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.card}>
-        {/* STEP 1 */}
+
+        {/* PHONE */}
         <div className={`${styles.step} ${step === 'phone' ? styles.active : styles.hidden}`}>
           <h1 className={styles.title}>ТВОИ ЦЕЛИ НА ГОД</h1>
           <p className={styles.subtitle}>трекер целей на год</p>
@@ -78,7 +81,7 @@ export default function Page() {
           </button>
         </div>
 
-        {/* STEP 2 */}
+        {/* CODE */}
         <div
           className={`${styles.step} ${
             step === 'code' ? styles.active : styles.hidden
@@ -96,20 +99,27 @@ export default function Page() {
           />
 
           <div className={styles.timer}>
-            {timer > 0 ? (
-              <>Отправить код повторно через <span>{timer} сек</span></>
-            ) : (
-              <span>Отправить код ещё раз</span>
-            )}
+            {timer > 0
+              ? <>Отправить код повторно через <span>{timer} сек</span></>
+              : <span>Отправить код ещё раз</span>
+            }
           </div>
 
-          <button
-            className={styles.button}
-            onClick={submitCode}
-          >
+          <button className={styles.button} onClick={submitCode}>
             Подтвердить
           </button>
         </div>
+
+        {/* GOALS */}
+        <div className={`${styles.step} ${step === 'goals' ? styles.active : styles.hidden}`}>
+          <h1 className={styles.title}>Мои цели на 2026</h1>
+          <p className={styles.subtitle}>Пока тут пусто — давай начнём</p>
+
+          <button className={styles.button}>
+            + Добавить первую цель
+          </button>
+        </div>
+
       </div>
     </div>
   )
