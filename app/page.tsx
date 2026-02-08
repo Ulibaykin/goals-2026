@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styles from './auth.module.css'
 
-type Step = 'phone' | 'code' | 'list' | 'goal'
+type Step = 'phone' | 'code' | 'list' | 'add' | 'goal'
 
 interface Goal {
   id: number
@@ -32,6 +32,9 @@ export default function Page() {
   const [goals, setGoals] = useState<Goal[]>([])
   const [activeGoal, setActiveGoal] = useState<Goal | null>(null)
 
+  const [newTitle, setNewTitle] = useState('')
+  const [newDesc, setNewDesc] = useState('')
+
   const phoneValid = phone.replace(/\D/g, '').length === 11
   const codeValid = code.length === 4
 
@@ -44,16 +47,21 @@ export default function Page() {
     setStep('list')
   }
 
-  function addDemoGoal() {
+  function saveGoal() {
+    if (!newTitle.trim()) return
+
     const g: Goal = {
       id: Date.now(),
-      title: 'Пример цели',
-      description:
-        'Это описание цели. В списке оно ограничено двумя строками.',
+      title: newTitle,
+      description: newDesc,
       progress: 0,
       deadline: '31.12.2026 23:59'
     }
-    setGoals([g])
+
+    setGoals([...goals, g])
+    setNewTitle('')
+    setNewDesc('')
+    setStep('list')
   }
 
   function openGoal(g: Goal) {
@@ -65,6 +73,7 @@ export default function Page() {
     if (!activeGoal) return
     const p = Math.min(100, Math.max(0, activeGoal.progress + delta))
     const updated = { ...activeGoal, progress: p }
+
     setActiveGoal(updated)
     setGoals(goals.map(g => (g.id === updated.id ? updated : g)))
   }
@@ -119,6 +128,12 @@ export default function Page() {
           <div>
             <h1 className={styles.title}>Мои цели на 2026</h1>
 
+            {goals.length === 0 && (
+              <p className={styles.subtitle} style={{ marginBottom: 16 }}>
+                У тебя пока нет целей на 2026 год
+              </p>
+            )}
+
             {goals.map(g => (
               <div
                 key={g.id}
@@ -143,8 +158,36 @@ export default function Page() {
               </div>
             ))}
 
-            <button className={styles.button} onClick={addDemoGoal}>
+            <button
+              className={styles.button}
+              onClick={() => setStep('add')}
+            >
               + Добавить цель
+            </button>
+          </div>
+        )}
+
+        {/* ADD */}
+        {step === 'add' && (
+          <div className={styles.center}>
+            <h1 className={styles.title}>Новая цель</h1>
+
+            <input
+              className={styles.input}
+              placeholder="Название цели"
+              value={newTitle}
+              onChange={e => setNewTitle(e.target.value)}
+            />
+
+            <textarea
+              className={styles.input}
+              placeholder="Опиши цель подробнее"
+              value={newDesc}
+              onChange={e => setNewDesc(e.target.value)}
+            />
+
+            <button className={styles.button} onClick={saveGoal}>
+              Сохранить цель
             </button>
           </div>
         )}
