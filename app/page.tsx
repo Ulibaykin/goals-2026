@@ -32,7 +32,7 @@ export default function Page() {
   const phoneValid = phone.replace(/\D/g, '').length === 11
   const codeValid = code.length === 4
 
-  // Таймер для SMS
+  // Таймер SMS
   useEffect(() => {
     if (step !== 'code') return
 
@@ -54,8 +54,12 @@ export default function Page() {
 
   function submitCode() {
     if (!codeValid) {
-      setShake(true)
-      setTimeout(() => setShake(false), 400)
+      // 🔥 ЖЁСТКИЙ СБРОС АНИМАЦИИ
+      setShake(false)
+      requestAnimationFrame(() => {
+        setShake(true)
+        setTimeout(() => setShake(false), 400)
+      })
       return
     }
 
@@ -147,14 +151,11 @@ export default function Page() {
         {/* ADD GOAL */}
         {step === 'add-goal' && (
           <div className={`${styles.step} ${styles.active}`}>
-            <h1 className={styles.title}>Новая цель</h1>
-            <p className={styles.subtitle}>
-              Сформулируй цель коротко и понятно
-            </p>
+            <h1 className={styles.title}>Добавить цель</h1>
 
             <input
               className={styles.input}
-              placeholder="Например: Запустить свой проект"
+              placeholder="Например: выучить английский"
               value={goal}
               onChange={(e) => setGoal(e.target.value)}
             />
@@ -168,7 +169,7 @@ export default function Page() {
                 setStep('goals')
               }}
             >
-              Сохранить цель
+              Сохранить
             </button>
           </div>
         )}
