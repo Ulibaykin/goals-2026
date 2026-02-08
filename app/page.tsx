@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styles from './auth.module.css'
 
 type Step = 'phone' | 'code' | 'goals' | 'new-goal'
@@ -23,8 +23,8 @@ function formatPhone(value: string) {
 }
 
 function getPercentColor(percent: number) {
-  const start = { r: 120, g: 83, b: 0 }     // тёмно-жёлтый
-  const end = { r: 250, g: 204, b: 21 }    // золотой
+  const start = { r: 120, g: 83, b: 0 }   // тёмно-жёлтый
+  const end = { r: 250, g: 204, b: 21 }   // золотой
   const p = Math.min(Math.max(percent / 100, 0), 1)
   const r = Math.round(start.r + (end.r - start.r) * p)
   const g = Math.round(start.g + (end.g - start.g) * p)
@@ -58,12 +58,7 @@ export default function Page() {
     if (!title.trim()) return
     setGoals([
       ...goals,
-      {
-        id: Date.now(),
-        title,
-        description,
-        progress: 0,
-      },
+      { id: Date.now(), title, description, progress: 0 },
     ])
     setTitle('')
     setDescription('')
@@ -82,7 +77,6 @@ export default function Page() {
     <div className={styles.wrapper}>
       <div className={styles.card}>
 
-        {/* PHONE */}
         {step === 'phone' && (
           <>
             <h1 className={styles.title}>ТВОИ ЦЕЛИ НА ГОД</h1>
@@ -104,7 +98,6 @@ export default function Page() {
           </>
         )}
 
-        {/* CODE */}
         {step === 'code' && (
           <div className={shake ? styles.shake : ''}>
             <h1 className={styles.title}>Код из SMS</h1>
@@ -123,7 +116,6 @@ export default function Page() {
           </div>
         )}
 
-        {/* GOALS */}
         {step === 'goals' && (
           <>
             <h1 className={styles.title}>Мои цели на 2026</h1>
@@ -162,7 +154,6 @@ export default function Page() {
           </>
         )}
 
-        {/* NEW GOAL */}
         {step === 'new-goal' && (
           <>
             <h1 className={styles.title}>Новая цель</h1>
