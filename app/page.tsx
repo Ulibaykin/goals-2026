@@ -60,4 +60,13 @@ export default function Page() {
 
           <button
             className={styles.button}
-            disabled={!c
+            disabled={!codeValid}
+            onClick={() => alert('Дальше — Supabase Auth')}
+          >
+            Подтвердить
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
