@@ -55,7 +55,7 @@ textarea.input {
   background: #ffffff;
   color: #000000;
   font-weight: 500;
-  transition: transform .1s ease, box-shadow .1s ease;
+  transition: transform .1s ease;
 }
 
 .button:active {
@@ -64,7 +64,6 @@ textarea.input {
 
 .button:disabled {
   opacity: .4;
-  cursor: default;
 }
 
 /* ---------- GOALS ---------- */
@@ -94,7 +93,7 @@ textarea.input {
   overflow: hidden;
 }
 
-/* ---------- PROGRESS ---------- */
+/* ---------- PROGRESS BAR ---------- */
 
 .progressRow {
   display: flex;
@@ -115,17 +114,16 @@ textarea.input {
   border-radius: 999px;
   background: linear-gradient(
     90deg,
-    #2563eb 0%,    /* синий */
-    #facc15 50%,   /* жёлтый */
-    #22c55e 100%   /* зелёный */
+    #2563eb 0%,   /* синий */
+    #22c55e 100%  /* зелёный */
   );
   transition: width 0.35s ease;
 }
 
+/* процент — цвет задаём из JS */
 .progressPercent {
   font-size: 13px;
   font-weight: 600;
-  color: #111827; /* графит, НЕ чёрный */
 }
 
 /* ---------- GOAL VIEW ---------- */
