@@ -10,18 +10,29 @@ type Goal = {
   title: string
   description: string
   progress: number
+  deadline: number
 }
+
+const DEFAULT_DEADLINE = new Date('2026-12-31T23:59:59').getTime()
 
 function formatPhone(value: string) {
   const digits = value.replace(/\D/g, '').slice(0, 11)
+  let r = '+7'
+  if (digits.length > 1) r += ' (' + digits.slice(1, 4)
+  if (digits.length >= 4) r += ') ' + digits.slice(4, 7)
+  if (digits.length >= 7) r += '-' + digits.slice(7, 9)
+  if (digits.length >= 9) r += '-' + digits.slice(9, 11)
+  return r
+}
 
-  let result = '+7'
-  if (digits.length > 1) result += ' (' + digits.slice(1, 4)
-  if (digits.length >= 4) result += ') ' + digits.slice(4, 7)
-  if (digits.length >= 7) result += '-' + digits.slice(7, 9)
-  if (digits.length >= 9) result += '-' + digits.slice(9, 11)
+function timeLeft(deadline: number) {
+  const diff = deadline - Date.now()
+  if (diff <= 0) return 'Срок истёк'
 
-  return result
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24))
+  const hours = Math.floor((diff / (1000 * 60 * 60)) % 24)
+
+  return `Осталось: ${days} дн. ${hours} ч.`
 }
 
 export default function Page() {
@@ -59,13 +70,14 @@ export default function Page() {
   }
 
   function saveGoal() {
-    const newGoal: Goal = {
+    const g: Goal = {
       id: Date.now(),
       title: goalTitle.trim(),
       description: goalDescription.trim(),
       progress: 0,
+      deadline: DEFAULT_DEADLINE,
     }
-    setGoals(prev => [newGoal, ...prev])
+    setGoals(p => [g, ...p])
     setGoalTitle('')
     setGoalDescription('')
     setStep('goals')
@@ -74,18 +86,18 @@ export default function Page() {
   function updateProgress(delta: number) {
     if (!activeGoal) return
 
-    const newProgress = Math.min(
+    const newValue = Math.min(
       100,
       Math.max(0, activeGoal.progress + delta)
     )
 
-    setGoals(prev =>
-      prev.map(g =>
-        g.id === activeGoal.id ? { ...g, progress: newProgress } : g
+    setGoals(p =>
+      p.map(g =>
+        g.id === activeGoal.id ? { ...g, progress: newValue } : g
       )
     )
 
-    setActiveGoal({ ...activeGoal, progress: newProgress })
+    setActiveGoal({ ...activeGoal, progress: newValue })
   }
 
   return (
@@ -128,14 +140,9 @@ export default function Page() {
 
                 <div className={styles.progressRow}>
                   <div className={styles.progressBar}>
-                    <div
-                      className={styles.progressFill}
-                      style={{ width: `${goal.progress}%` }}
-                    />
+                    <div className={styles.progressFill} style={{ width: `${goal.progress}%` }} />
                   </div>
-                  <div className={styles.progressPercent}>
-                    {goal.progress}%
-                  </div>
+                  <div className={styles.progressPercent}>{goal.progress}%</div>
                 </div>
               </div>
             ))}
@@ -160,13 +167,15 @@ export default function Page() {
             <h1 className={styles.title}>{activeGoal.title}</h1>
             <p className={styles.subtitle}>{activeGoal.description}</p>
 
-            <div className={styles.progressBig}>
-              {activeGoal.progress}%
-            </div>
+            <div className={styles.progressBig}>{activeGoal.progress}%</div>
 
             <div className={styles.progressButtons}>
               <button className={styles.button} onClick={() => updateProgress(-10)}>-10%</button>
               <button className={styles.button} onClick={() => updateProgress(10)}>+10%</button>
+            </div>
+
+            <div className={styles.deadline}>
+              {timeLeft(activeGoal.deadline)}
             </div>
 
             <button className={styles.button} onClick={() => setStep('goals')}>
