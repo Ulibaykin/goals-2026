@@ -14,13 +14,13 @@
   border-radius: 22px;
   padding: 28px 24px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-  animation: cardAppear 0.5s ease-out;
+  animation: cardAppear 0.4s ease;
 }
 
 @keyframes cardAppear {
   from {
     opacity: 0;
-    transform: scale(0.96) translateY(10px);
+    transform: scale(0.97) translateY(10px);
   }
   to {
     opacity: 1;
@@ -28,13 +28,13 @@
   }
 }
 
-/* ---------- STEP ---------- */
+/* -------- STEPS -------- */
 
 .step {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .hidden {
@@ -52,7 +52,7 @@
   visibility: visible;
 }
 
-/* ---------- TEXT ---------- */
+/* -------- TEXT -------- */
 
 .title {
   color: #fff;
@@ -67,7 +67,7 @@
   text-align: center;
 }
 
-/* ---------- INPUT ---------- */
+/* -------- INPUT -------- */
 
 .input {
   height: 48px;
@@ -80,7 +80,7 @@
   color: #000;
 }
 
-/* ---------- BUTTON ---------- */
+/* -------- BUTTON -------- */
 
 .button {
   height: 48px;
@@ -91,81 +91,54 @@
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.2s ease, opacity 0.15s ease;
-}
-
-/* 🔥 GLOW при активной кнопке */
-.button:not(:disabled) {
-  box-shadow: 0 0 0 rgba(255, 255, 255, 0);
-  animation: glow 2s infinite;
-}
-
-@keyframes glow {
-  0% {
-    box-shadow: 0 0 0 rgba(255, 255, 255, 0);
-  }
-  50% {
-    box-shadow: 0 0 18px rgba(255, 255, 255, 0.35);
-  }
-  100% {
-    box-shadow: 0 0 0 rgba(255, 255, 255, 0);
-  }
-}
-
-.button:active {
-  transform: scale(0.97);
 }
 
 .button:disabled {
-  opacity: 0.35;
+  opacity: 0.4;
   cursor: default;
-  animation: none;
 }
 
-/* ---------- CODE ---------- */
+/* -------- GOALS -------- */
 
-.codeInput {
-  letter-spacing: 10px;
-  text-align: center;
-  font-size: 20px;
-}
-
-/* ---------- TIMER ---------- */
-
-.timer {
-  text-align: center;
-  font-size: 13px;
-  color: #a1a1aa;
-}
-
-.timer span {
+.goalCard {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 16px;
   color: #fff;
-  font-weight: 500;
+  font-size: 16px;
 }
 
-/* ---------- ANIMATIONS ---------- */
+/* -------- MODAL -------- */
 
-/* pulse при вводе кода */
-.pulse {
-  animation: pulse 0.25s ease;
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.06); }
-  100% { transform: scale(1); }
+.modal {
+  width: 90%;
+  max-width: 360px;
+  background: #111;
+  border-radius: 20px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: modalAppear 0.25s ease;
 }
 
-/* ❌ SHAKE при ошибке */
-.shake {
-  animation: shake 0.4s;
-}
-
-@keyframes shake {
-  0% { transform: translateX(0); }
-  20% { transform: translateX(-6px); }
-  40% { transform: translateX(6px); }
-  60% { transform: translateX(-4px); }
-  80% { transform: translateX(4px); }
-  100% { transform: translateX(0); }
+@keyframes modalAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
