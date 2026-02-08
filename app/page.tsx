@@ -3,199 +3,174 @@
 import { useState } from 'react'
 import styles from './auth.module.css'
 
-type Step = 'phone' | 'code' | 'goals' | 'add' | 'view'
+type Screen = 'phone' | 'code' | 'list' | 'new' | 'card'
 
 type Goal = {
   id: number
   title: string
   description: string
   progress: number
-  completedAt?: string
-}
-
-const DEADLINE = new Date('2026-12-31T23:59:59')
-
-function formatPhone(value: string) {
-  const digits = value.replace(/\D/g, '').slice(0, 11)
-  let r = '+7'
-  if (digits.length > 1) r += ' (' + digits.slice(1, 4)
-  if (digits.length >= 4) r += ') ' + digits.slice(4, 7)
-  if (digits.length >= 7) r += '-' + digits.slice(7, 9)
-  if (digits.length >= 9) r += '-' + digits.slice(9, 11)
-  return r
-}
-
-function timeLeft() {
-  const diff = DEADLINE.getTime() - Date.now()
-  if (diff <= 0) return 'Срок истёк'
-
-  const d = Math.floor(diff / 86400000)
-  const h = Math.floor((diff % 86400000) / 3600000)
-  const m = Math.floor((diff % 3600000) / 60000)
-
-  return `Осталось: ${d} д ${h} ч ${m} мин`
+  doneAt?: string
 }
 
 export default function Page() {
-  const [step, setStep] = useState<Step>('phone')
-  const [phone, setPhone] = useState('+7')
-  const [code, setCode] = useState('')
-  const [shake, setShake] = useState(false)
-
+  const [screen, setScreen] = useState<Screen>('phone')
   const [goals, setGoals] = useState<Goal[]>([])
-  const [current, setCurrent] = useState<Goal | null>(null)
+  const [activeGoal, setActiveGoal] = useState<Goal | null>(null)
 
   const [title, setTitle] = useState('')
   const [desc, setDesc] = useState('')
 
-  const phoneValid = phone.replace(/\D/g, '').length === 11
-  const codeValid = code.length === 4
-
-  function submitCode() {
-    if (!codeValid) {
-      setShake(true)
-      setTimeout(() => setShake(false), 400)
-      return
-    }
-    setStep('goals')
-  }
-
   function addGoal() {
+    if (!title.trim()) return
     setGoals([
       ...goals,
-      { id: Date.now(), title, description: desc, progress: 0 }
+      { id: Date.now(), title, description: desc, progress: 0 },
     ])
     setTitle('')
     setDesc('')
-    setStep('goals')
+    setScreen('list')
   }
 
   function updateProgress(delta: number) {
-    if (!current) return
-
-    let next = Math.min(100, Math.max(0, current.progress + delta))
-    let completedAt = current.completedAt
-
-    if (next === 100 && !completedAt) {
-      completedAt = new Date().toLocaleDateString('ru-RU')
+    if (!activeGoal) return
+    const next = Math.min(100, Math.max(0, activeGoal.progress + delta))
+    const updated = {
+      ...activeGoal,
+      progress: next,
+      doneAt: next === 100 ? new Date().toLocaleDateString() : undefined,
     }
-
-    const updated = { ...current, progress: next, completedAt }
-
-    setGoals((g) =>
-      [...g.filter((x) => x.id !== updated.id), updated].sort(
-        (a, b) => (a.progress === 100 ? 1 : -1)
-      )
-    )
-
-    setCurrent(updated)
+    setGoals(goals.map(g => (g.id === updated.id ? updated : g)))
+    setActiveGoal(updated)
   }
 
   return (
     <div className={styles.wrapper}>
       <div className={styles.card}>
 
-        {/* PHONE */}
-        {step === 'phone' && (
-          <div className={styles.center}>
+        {screen === 'phone' && (
+          <div className={styles.column}>
             <h1 className={styles.title}>ТВОИ ЦЕЛИ НА ГОД</h1>
-            <p className={styles.subtitle}>трекер целей на год</p>
-            <input className={styles.input} value={phone} onChange={(e) => setPhone(formatPhone(e.target.value))} />
-            <button className={styles.button} disabled={!phoneValid} onClick={() => setStep('code')}>Войти</button>
+            <input className={styles.input} placeholder="+7 (___) ___-__-__" />
+            <button className={styles.button} onClick={() => setScreen('code')}>
+              Войти
+            </button>
           </div>
         )}
 
-        {/* CODE */}
-        {step === 'code' && (
-          <div className={`${styles.center} ${shake ? styles.shake : ''}`}>
+        {screen === 'code' && (
+          <div className={styles.column}>
             <h1 className={styles.title}>Код из SMS</h1>
-            <input className={styles.input} value={code} maxLength={4} onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))} />
-            <button className={styles.button} onClick={submitCode}>Подтвердить</button>
+            <input className={styles.input} placeholder="••••" />
+            <button className={styles.button} onClick={() => setScreen('list')}>
+              Подтвердить
+            </button>
           </div>
         )}
 
-        {/* GOALS */}
-        {step === 'goals' && (
-          <>
-            <h1 className={styles.title}>Мои цели на 2026</h1>
+        {screen === 'list' && (
+          <div className={styles.list}>
+            <h2 className={styles.title}>Мои цели на 2026</h2>
 
             {goals.length === 0 && (
-              <p className={styles.subtitle}>У тебя пока нет целей на 2026 год</p>
+              <p className={styles.empty}>У тебя пока нет целей на 2026 год</p>
             )}
 
-            {goals.map((g) => (
-              <div key={g.id} className={styles.goalCard} onClick={() => { setCurrent(g); setStep('view') }}>
+            {goals.map(g => (
+              <div
+                key={g.id}
+                className={styles.goal}
+                onClick={() => {
+                  setActiveGoal(g)
+                  setScreen('card')
+                }}
+              >
                 <div className={styles.goalHeader}>
-                  <strong>{g.title}</strong>
-                  {g.progress === 100 ? '🏆' : <span className={styles.percent}>{g.progress}%</span>}
+                  <span className={styles.goalTitle}>{g.title}</span>
+                  <span
+                    className={styles.goalPercent}
+                    style={{ '--p': g.progress } as any}
+                  >
+                    {g.progress}%
+                  </span>
                 </div>
-
-                <p className={styles.goalDesc}>{g.description}</p>
 
                 <div className={styles.progress}>
                   <div
                     className={styles.progressFill}
-                    style={{
-                      width: `${g.progress}%`,
-                      background: g.progress === 100
-                        ? '#00ff6a'
-                        : 'linear-gradient(90deg,#1e90ff,#00ff6a)'
-                    }}
+                    style={{ width: `${g.progress}%` }}
                   />
                 </div>
 
-                {g.progress === 100 ? (
-                  <div className={styles.deadline}>Выполнено: {g.completedAt}</div>
+                {g.doneAt ? (
+                  <div className={styles.done}>Выполнено: {g.doneAt}</div>
                 ) : (
-                  <div className={styles.deadline}>⏳ {timeLeft()}</div>
+                  <div className={styles.timer}>
+                    ⏳ Осталось: 326 д 8 ч 38 мин
+                  </div>
                 )}
               </div>
             ))}
 
-            <button className={styles.button} onClick={() => setStep('add')}>
+            <button
+              className={styles.button}
+              onClick={() => setScreen('new')}
+            >
               + Добавить цель
             </button>
-          </>
-        )}
-
-        {/* ADD */}
-        {step === 'add' && (
-          <div className={styles.center}>
-            <h1 className={styles.title}>Новая цель</h1>
-            <input className={styles.input} placeholder="Название цели" value={title} onChange={(e) => setTitle(e.target.value)} />
-            <textarea className={styles.input} placeholder="Описание цели" value={desc} onChange={(e) => setDesc(e.target.value)} />
-            <button className={styles.button} onClick={addGoal}>Сохранить</button>
           </div>
         )}
 
-        {/* VIEW */}
-        {step === 'view' && current && (
-          <>
-            <h1 className={styles.title}>{current.title}</h1>
-            <p className={styles.subtitle}>{current.description}</p>
-
-            {current.progress === 100 ? (
-              <>
-                <div className={styles.bigPercent}>🏆</div>
-                <div className={styles.deadline}>Выполнено: {current.completedAt}</div>
-              </>
-            ) : (
-              <>
-                <div className={styles.bigPercent}>{current.progress}%</div>
-                <div className={styles.controls}>
-                  <button onClick={() => updateProgress(-10)}>-10</button>
-                  <button onClick={() => updateProgress(10)}>+10</button>
-                </div>
-                <div className={styles.deadline}>⏳ {timeLeft()}</div>
-              </>
-            )}
-
-            <button className={styles.button} onClick={() => setStep('goals')}>
-              ← Назад
+        {screen === 'new' && (
+          <div className={styles.column}>
+            <h2 className={styles.title}>Новая цель</h2>
+            <input
+              className={styles.input}
+              placeholder="Название цели"
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+            />
+            <textarea
+              className={styles.textarea}
+              placeholder="Описание цели"
+              value={desc}
+              onChange={e => setDesc(e.target.value)}
+            />
+            <button className={styles.button} onClick={addGoal}>
+              Сохранить
             </button>
-          </>
+          </div>
         )}
 
+        {screen === 'card' && activeGoal && (
+          <div className={styles.column}>
+            <h2 className={styles.title}>{activeGoal.title}</h2>
+            <p className={styles.text}>{activeGoal.description}</p>
+
+            <div
+              className={styles.bigPercent}
+              style={{ '--p': activeGoal.progress } as any}
+            >
+              {activeGoal.progress}%
+            </div>
+
+            <div className={styles.controls}>
+              <button onClick={() => updateProgress(-10)}>-10</button>
+              <button onClick={() => updateProgress(10)}>+10</button>
+            </div>
+
+            <div className={styles.timer}>
+              ⏳ Осталось: 326 д 8 ч 38 мин
+            </div>
+
+            <button
+              className={styles.button}
+              onClick={() => setScreen('list')}
+            >
+              ← Назад
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
