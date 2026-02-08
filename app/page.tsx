@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import styles from './auth.module.css'
 
 type Step = 'phone' | 'code' | 'list' | 'add' | 'goal'
@@ -10,8 +10,9 @@ interface Goal {
   title: string
   description: string
   progress: number
-  deadline: string
 }
+
+const DEADLINE = new Date('2026-12-31T23:59:59')
 
 function formatPhone(value: string) {
   const digits = value.replace(/\D/g, '').slice(0, 11)
@@ -21,6 +22,20 @@ function formatPhone(value: string) {
   if (digits.length >= 7) r += '-' + digits.slice(7, 9)
   if (digits.length >= 9) r += '-' + digits.slice(9, 11)
   return r
+}
+
+function timeLeft() {
+  const now = new Date()
+  const diff = DEADLINE.getTime() - now.getTime()
+
+  if (diff <= 0) return '⛔ Срок цели истёк'
+
+  const totalMin = Math.floor(diff / 60000)
+  const days = Math.floor(totalMin / 1440)
+  const hours = Math.floor((totalMin % 1440) / 60)
+  const minutes = totalMin % 60
+
+  return `⏳ Осталось: ${days} дн ${hours} ч ${minutes} мин`
 }
 
 export default function Page() {
@@ -34,9 +49,17 @@ export default function Page() {
 
   const [newTitle, setNewTitle] = useState('')
   const [newDesc, setNewDesc] = useState('')
+  const [deadlineText, setDeadlineText] = useState(timeLeft())
 
   const phoneValid = phone.replace(/\D/g, '').length === 11
   const codeValid = code.length === 4
+
+  useEffect(() => {
+    const t = setInterval(() => {
+      setDeadlineText(timeLeft())
+    }, 60000)
+    return () => clearInterval(t)
+  }, [])
 
   function submitCode() {
     if (!codeValid) {
@@ -50,23 +73,19 @@ export default function Page() {
   function saveGoal() {
     if (!newTitle.trim()) return
 
-    const g: Goal = {
-      id: Date.now(),
-      title: newTitle,
-      description: newDesc,
-      progress: 0,
-      deadline: '31.12.2026 23:59'
-    }
+    setGoals([
+      ...goals,
+      {
+        id: Date.now(),
+        title: newTitle,
+        description: newDesc,
+        progress: 0
+      }
+    ])
 
-    setGoals([...goals, g])
     setNewTitle('')
     setNewDesc('')
     setStep('list')
-  }
-
-  function openGoal(g: Goal) {
-    setActiveGoal(g)
-    setStep('goal')
   }
 
   function updateProgress(delta: number) {
@@ -82,7 +101,6 @@ export default function Page() {
     <div className={styles.wrapper}>
       <div className={styles.card}>
 
-        {/* PHONE */}
         {step === 'phone' && (
           <div className={styles.center}>
             <h1 className={styles.title}>ТВОИ ЦЕЛИ НА ГОД</h1>
@@ -104,7 +122,6 @@ export default function Page() {
           </div>
         )}
 
-        {/* CODE */}
         {step === 'code' && (
           <div className={`${styles.center} ${shake ? styles.shake : ''}`}>
             <h1 className={styles.title}>Код из SMS</h1>
@@ -123,13 +140,12 @@ export default function Page() {
           </div>
         )}
 
-        {/* LIST */}
         {step === 'list' && (
           <div>
             <h1 className={styles.title}>Мои цели на 2026</h1>
 
             {goals.length === 0 && (
-              <p className={styles.subtitle} style={{ marginBottom: 16 }}>
+              <p className={styles.subtitle}>
                 У тебя пока нет целей на 2026 год
               </p>
             )}
@@ -138,7 +154,10 @@ export default function Page() {
               <div
                 key={g.id}
                 className={styles.goalCard}
-                onClick={() => openGoal(g)}
+                onClick={() => {
+                  setActiveGoal(g)
+                  setStep('goal')
+                }}
               >
                 <div className={styles.goalHeader}>
                   <h3>{g.title}</h3>
@@ -154,20 +173,16 @@ export default function Page() {
                   />
                 </div>
 
-                <div className={styles.deadline}>⏱ {g.deadline}</div>
+                <div className={styles.deadline}>{deadlineText}</div>
               </div>
             ))}
 
-            <button
-              className={styles.button}
-              onClick={() => setStep('add')}
-            >
+            <button className={styles.button} onClick={() => setStep('add')}>
               + Добавить цель
             </button>
           </div>
         )}
 
-        {/* ADD */}
         {step === 'add' && (
           <div className={styles.center}>
             <h1 className={styles.title}>Новая цель</h1>
@@ -192,7 +207,6 @@ export default function Page() {
           </div>
         )}
 
-        {/* GOAL */}
         {step === 'goal' && activeGoal && (
           <div>
             <h1 className={styles.title}>{activeGoal.title}</h1>
@@ -206,6 +220,8 @@ export default function Page() {
               <button onClick={() => updateProgress(-10)}>-10</button>
               <button onClick={() => updateProgress(10)}>+10</button>
             </div>
+
+            <div className={styles.deadline}>{deadlineText}</div>
 
             <button className={styles.button} onClick={() => setStep('list')}>
               ← Назад
