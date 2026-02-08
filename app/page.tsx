@@ -17,6 +17,12 @@ function formatPhone(value: string) {
 
 type Step = 'phone' | 'code' | 'goals' | 'add-goal'
 
+type Goal = {
+  id: number
+  title: string
+  description: string
+}
+
 export default function Page() {
   const [step, setStep] = useState<Step>('phone')
 
@@ -25,6 +31,7 @@ export default function Page() {
   const [timer, setTimer] = useState(60)
   const [shakeKey, setShakeKey] = useState(0)
 
+  const [goals, setGoals] = useState<Goal[]>([])
   const [goalTitle, setGoalTitle] = useState('')
   const [goalDescription, setGoalDescription] = useState('')
 
@@ -52,9 +59,13 @@ export default function Page() {
   }
 
   function saveGoal() {
-    alert(
-      `Цель добавлена:\n\n${goalTitle}\n\n${goalDescription}`
-    )
+    const newGoal: Goal = {
+      id: Date.now(),
+      title: goalTitle.trim(),
+      description: goalDescription.trim(),
+    }
+
+    setGoals((prev) => [newGoal, ...prev])
 
     setGoalTitle('')
     setGoalDescription('')
@@ -118,19 +129,35 @@ export default function Page() {
           </div>
         )}
 
-        {/* GOALS */}
+        {/* GOALS LIST */}
         {step === 'goals' && (
           <div className={styles.step}>
             <h1 className={styles.title}>Мои цели на 2026</h1>
-            <p className={styles.subtitle}>
-              Пока тут пусто — давай начнём
-            </p>
+
+            {goals.length === 0 ? (
+              <p className={styles.subtitle}>
+                Пока тут пусто — давай начнём
+              </p>
+            ) : (
+              goals.map((goal) => (
+                <div key={goal.id} className={styles.goalCard}>
+                  <div style={{ fontWeight: 600 }}>
+                    {goal.title}
+                  </div>
+                  {goal.description && (
+                    <div style={{ fontSize: 14, opacity: 0.8 }}>
+                      {goal.description}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
 
             <button
               className={styles.button}
               onClick={() => setStep('add-goal')}
             >
-              + Добавить первую цель
+              + Добавить цель
             </button>
           </div>
         )}
@@ -150,7 +177,7 @@ export default function Page() {
             <textarea
               className={styles.input}
               style={{ height: 100, paddingTop: 12 }}
-              placeholder="Опиши цель подробнее: зачем она тебе, что изменится после её достижения"
+              placeholder="Более развернуто опиши свою цель"
               value={goalDescription}
               onChange={(e) => setGoalDescription(e.target.value)}
             />
