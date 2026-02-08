@@ -7,7 +7,6 @@ function formatPhone(value: string) {
   const digits = value.replace(/\D/g, '').slice(0, 11)
 
   let result = '+7'
-
   if (digits.length > 1) result += ' (' + digits.slice(1, 4)
   if (digits.length >= 4) result += ') ' + digits.slice(4, 7)
   if (digits.length >= 7) result += '-' + digits.slice(7, 9)
@@ -27,55 +26,57 @@ export default function Page() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.card}>
-        {step === 'phone' && (
-          <>
-            <h1 className={styles.title}>ТВОИ ЦЕЛИ НА ГОД</h1>
-            <p className={styles.subtitle}>трекер целей на год</p>
+        <div
+          className={`${styles.step} ${
+            step === 'phone' ? styles.active : styles.hidden
+          }`}
+        >
+          <h1 className={styles.title}>ТВОИ ЦЕЛИ НА ГОД</h1>
+          <p className={styles.subtitle}>трекер целей на год</p>
 
-            <input
-              className={styles.input}
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(formatPhone(e.target.value))}
-            />
+          <input
+            className={styles.input}
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(formatPhone(e.target.value))}
+          />
 
-            <button
-              className={styles.button}
-              disabled={!phoneValid}
-              onClick={() => setStep('code')}
-            >
-              Войти
-            </button>
-          </>
-        )}
+          <button
+            className={styles.button}
+            disabled={!phoneValid}
+            onClick={() => setStep('code')}
+          >
+            Войти
+          </button>
+        </div>
 
-        {step === 'code' && (
-          <>
-            <h1 className={styles.title}>Код из SMS</h1>
-            <p className={styles.subtitle}>
-              Мы отправили код на {phone}
-            </p>
+        <div
+          className={`${styles.step} ${
+            step === 'code' ? styles.active : styles.hidden
+          }`}
+        >
+          <h1 className={styles.title}>Код из SMS</h1>
+          <p className={styles.subtitle}>Мы отправили код на {phone}</p>
 
-            <input
-              className={styles.input}
-              type="text"
-              inputMode="numeric"
-              maxLength={4}
-              value={code}
-              onChange={(e) =>
-                setCode(e.target.value.replace(/\D/g, ''))
-              }
-            />
+          <input
+            className={styles.input}
+            type="text"
+            inputMode="numeric"
+            maxLength={4}
+            value={code}
+            onChange={(e) =>
+              setCode(e.target.value.replace(/\D/g, ''))
+            }
+          />
 
-            <button
-              className={styles.button}
-              disabled={!codeValid}
-              onClick={() => alert('Дальше будет Supabase Auth')}
-            >
-              Подтвердить
-            </button>
-          </>
-        )}
+          <button
+            className={styles.button}
+            disabled={!codeValid}
+            onClick={() => alert('Следующий шаг — Supabase Auth')}
+          >
+            Подтвердить
+          </button>
+        </div>
       </div>
     </div>
   )
