@@ -1,9 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import styles from './auth.module.css'
-
-type Step = 'phone' | 'code' | 'goals'
 
 function formatPhone(value: string) {
   const digits = value.replace(/\D/g, '').slice(0, 11)
@@ -17,125 +15,102 @@ function formatPhone(value: string) {
   return result
 }
 
+type Step = 'phone' | 'code' | 'goals'
+
 export default function Page() {
   const [step, setStep] = useState<Step>('phone')
   const [phone, setPhone] = useState('+7')
   const [code, setCode] = useState('')
-  const [goals, setGoals] = useState<string[]>([])
-  const [showModal, setShowModal] = useState(false)
-  const [newGoal, setNewGoal] = useState('')
+  const [timer, setTimer] = useState(60)
   const [shake, setShake] = useState(false)
 
   const phoneValid = phone.replace(/\D/g, '').length === 11
   const codeValid = code.length === 4
 
+  useEffect(() => {
+    if (step !== 'code') return
+
+    setTimer(60)
+    const interval = setInterval(() => {
+      setTimer((t) => (t > 0 ? t - 1 : 0))
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [step])
+
   function submitCode() {
     if (!codeValid) {
-      setShake(true)
-      setTimeout(() => setShake(false), 400)
+      setShake(false)
+      requestAnimationFrame(() => setShake(true))
       return
     }
-    setStep('goals')
-  }
 
-  function addGoal() {
-    if (!newGoal.trim()) return
-    setGoals([...goals, newGoal.trim()])
-    setNewGoal('')
-    setShowModal(false)
+    setStep('goals')
   }
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.card}>
+      <div className={`${styles.card} ${shake ? styles.shake : ''}`}>
 
-        {/* PHONE */}
-        <div className={`${styles.step} ${step === 'phone' ? styles.active : styles.hidden}`}>
-          <h1 className={styles.title}>ТВОИ ЦЕЛИ НА ГОД</h1>
-          <p className={styles.subtitle}>трекер целей на год</p>
-
-          <input
-            className={styles.input}
-            value={phone}
-            onChange={(e) => setPhone(formatPhone(e.target.value))}
-          />
-
-          <button
-            className={styles.button}
-            disabled={!phoneValid}
-            onClick={() => setStep('code')}
-          >
-            Войти
-          </button>
-        </div>
-
-        {/* CODE */}
-        <div
-          className={`${styles.step} ${
-            step === 'code' ? styles.active : styles.hidden
-          } ${shake ? styles.shake : ''}`}
-        >
-          <h1 className={styles.title}>Код из SMS</h1>
-          <p className={styles.subtitle}>Мы отправили код на {phone}</p>
-
-          <input
-            className={styles.input}
-            maxLength={4}
-            value={code}
-            onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-          />
-
-          <button className={styles.button} onClick={submitCode}>
-            Подтвердить
-          </button>
-        </div>
-
-        {/* GOALS */}
-        <div className={`${styles.step} ${step === 'goals' ? styles.active : styles.hidden}`}>
-          <h1 className={styles.title}>Мои цели на 2026</h1>
-          <p className={styles.subtitle}>
-            {goals.length === 0
-              ? 'Пока тут пусто — давай начнём'
-              : 'Твои цели на этот год'}
-          </p>
-
-          {goals.map((goal, index) => (
-            <div key={index} className={styles.goalCard}>
-              {goal}
-            </div>
-          ))}
-
-          <button
-            className={styles.button}
-            onClick={() => setShowModal(true)}
-          >
-            + Добавить цель
-          </button>
-        </div>
-      </div>
-
-      {/* MODAL */}
-      {showModal && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modal}>
-            <h2 className={styles.title}>Новая цель</h2>
+        {step === 'phone' && (
+          <div className={`${styles.step} ${styles.active}`}>
+            <h1 className={styles.title}>ТВОИ ЦЕЛИ НА ГОД</h1>
+            <p className={styles.subtitle}>трекер целей на год</p>
 
             <input
               className={styles.input}
-              placeholder="Например: Купить дом"
-              value={newGoal}
-              onChange={(e) => setNewGoal(e.target.value)}
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(formatPhone(e.target.value))}
             />
-
-            <button className={styles.button} onClick={addGoal}>
-              Сохранить
-            </button>
 
             <button
               className={styles.button}
-              onClick={() => setShowModal(false)}
+              disabled={!phoneValid}
+              onClick={() => setStep('code')}
             >
-              Отмена
+              Войти
             </button>
           </div>
-        </div>
+        )}
+
+        {step === 'code' && (
+          <div className={`${styles.step} ${styles.active}`}>
+            <h1 className={styles.title}>Код из SMS</h1>
+            <p className={styles.subtitle}>Мы отправили код на {phone}</p>
+
+            <input
+              className={`${styles.input} ${styles.codeInput}`}
+              inputMode="numeric"
+              maxLength={4}
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+            />
+
+            <div className={styles.timer}>
+              {timer > 0
+                ? <>Повтор через <span>{timer} сек</span></>
+                : <span>Отправить код ещё раз</span>}
+            </div>
+
+            <button className={styles.button} onClick={submitCode}>
+              Подтвердить
+            </button>
+          </div>
+        )}
+
+        {step === 'goals' && (
+          <div className={`${styles.step} ${styles.active}`}>
+            <h1 className={styles.title}>Мои цели на 2026</h1>
+            <p className={styles.subtitle}>Пока тут пусто — давай начнём</p>
+
+            <button className={styles.button}>
+              + Добавить первую цель
+            </button>
+          </div>
+        )}
+
+      </div>
+    </div>
+  )
+}
