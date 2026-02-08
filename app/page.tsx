@@ -15,15 +15,16 @@ function formatPhone(value: string) {
   return result
 }
 
-type Step = 'phone' | 'code' | 'goals'
+type Step = 'phone' | 'code' | 'goals' | 'add-goal'
 
 export default function Page() {
   const [step, setStep] = useState<Step>('phone')
   const [phone, setPhone] = useState('+7')
   const [code, setCode] = useState('')
   const [timer, setTimer] = useState(60)
-
   const [shakeKey, setShakeKey] = useState(0)
+
+  const [goalTitle, setGoalTitle] = useState('')
 
   const phoneValid = phone.replace(/\D/g, '').length === 11
   const codeValid = code.length === 4
@@ -41,7 +42,6 @@ export default function Page() {
 
   function submitCode() {
     if (!codeValid) {
-      // 🔥 ФОРС ПЕРЕЗАПУСК АНИМАЦИИ
       setShakeKey((k) => k + 1)
       return
     }
@@ -53,6 +53,7 @@ export default function Page() {
     <div className={styles.wrapper}>
       <div className={styles.card}>
 
+        {/* PHONE */}
         {step === 'phone' && (
           <div className={styles.step}>
             <h1 className={styles.title}>ТВОИ ЦЕЛИ НА ГОД</h1>
@@ -75,13 +76,14 @@ export default function Page() {
           </div>
         )}
 
+        {/* CODE */}
         {step === 'code' && (
           <div className={styles.step}>
             <h1 className={styles.title}>Код из SMS</h1>
             <p className={styles.subtitle}>Мы отправили код на {phone}</p>
 
             <input
-              key={shakeKey} // ⬅️ ВАЖНО
+              key={shakeKey}
               className={`${styles.input} ${styles.codeInput}`}
               inputMode="numeric"
               maxLength={4}
@@ -104,6 +106,7 @@ export default function Page() {
           </div>
         )}
 
+        {/* GOALS EMPTY */}
         {step === 'goals' && (
           <div className={styles.step}>
             <h1 className={styles.title}>Мои цели на 2026</h1>
@@ -111,8 +114,40 @@ export default function Page() {
               Пока тут пусто — давай начнём
             </p>
 
-            <button className={styles.button}>
+            <button
+              className={styles.button}
+              onClick={() => setStep('add-goal')}
+            >
               + Добавить первую цель
+            </button>
+          </div>
+        )}
+
+        {/* ADD GOAL */}
+        {step === 'add-goal' && (
+          <div className={styles.step}>
+            <h1 className={styles.title}>Новая цель</h1>
+            <p className={styles.subtitle}>
+              Сформулируй её максимально ясно
+            </p>
+
+            <input
+              className={styles.input}
+              placeholder="Например: Запустить бизнес"
+              value={goalTitle}
+              onChange={(e) => setGoalTitle(e.target.value)}
+            />
+
+            <button
+              className={styles.button}
+              disabled={!goalTitle.trim()}
+              onClick={() => {
+                alert('Цель добавлена (пока без сохранения)')
+                setGoalTitle('')
+                setStep('goals')
+              }}
+            >
+              Сохранить цель
             </button>
           </div>
         )}
