@@ -62,7 +62,7 @@ textarea.input {
   cursor: default;
 }
 
-/* ---------- GOALS ---------- */
+/* ---------- GOALS LIST ---------- */
 
 .goalCard {
   background: #ffffff;
@@ -71,14 +71,8 @@ textarea.input {
   padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
   cursor: pointer;
-  transition: transform .15s ease, box-shadow .15s ease;
-}
-
-.goalCard:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(0,0,0,.15);
 }
 
 .goalTitle {
@@ -95,7 +89,49 @@ textarea.input {
   overflow: hidden;
 }
 
-/* ---------- CODE INPUT ---------- */
+/* ---------- PROGRESS ---------- */
+
+.progressRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progressBar {
+  flex: 1;
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #22c55e;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.progressPercent {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* ---------- GOAL VIEW ---------- */
+
+.progressBig {
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin: 12px 0;
+}
+
+.progressButtons {
+  display: flex;
+  gap: 12px;
+}
+
+/* ---------- CODE ---------- */
 
 .codeInput {
   text-align: center;
