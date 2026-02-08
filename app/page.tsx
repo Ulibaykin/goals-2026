@@ -24,12 +24,17 @@ export default function Page() {
   const [goals, setGoals] = useState<string[]>([])
   const [showModal, setShowModal] = useState(false)
   const [newGoal, setNewGoal] = useState('')
+  const [shake, setShake] = useState(false)
 
   const phoneValid = phone.replace(/\D/g, '').length === 11
   const codeValid = code.length === 4
 
   function submitCode() {
-    if (!codeValid) return
+    if (!codeValid) {
+      setShake(true)
+      setTimeout(() => setShake(false), 400)
+      return
+    }
     setStep('goals')
   }
 
@@ -65,7 +70,11 @@ export default function Page() {
         </div>
 
         {/* CODE */}
-        <div className={`${styles.step} ${step === 'code' ? styles.active : styles.hidden}`}>
+        <div
+          className={`${styles.step} ${
+            step === 'code' ? styles.active : styles.hidden
+          } ${shake ? styles.shake : ''}`}
+        >
           <h1 className={styles.title}>Код из SMS</h1>
           <p className={styles.subtitle}>Мы отправили код на {phone}</p>
 
@@ -130,7 +139,3 @@ export default function Page() {
             </button>
           </div>
         </div>
-      )}
-    </div>
-  )
-}
