@@ -3,42 +3,45 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #0b0f14, #020409);
+  background: radial-gradient(circle at top, #0e1624, #05070c);
+  font-family: Inter, system-ui, sans-serif;
 }
 
 .card {
   width: 360px;
   background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(14px);
-  border-radius: 18px;
-  padding: 24px;
-  color: #ffffff;
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 28px;
+  color: #fff;
+}
+
+.center {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  align-items: center;
+  gap: 14px;
 }
 
 .title {
-  text-align: center;
   font-size: 22px;
+  font-weight: 700;
+  text-align: center;
 }
 
 .subtitle {
-  text-align: center;
   font-size: 13px;
-  color: #9ca3af;
+  color: #aaa;
+  text-align: center;
 }
 
-.input, .textarea {
+.input {
   width: 100%;
   padding: 12px;
   border-radius: 10px;
   border: none;
-}
-
-.textarea {
-  resize: none;
-  height: 80px;
+  outline: none;
+  font-size: 16px;
 }
 
 .button {
@@ -46,7 +49,6 @@
   padding: 12px;
   border-radius: 12px;
   border: none;
-  background: #ffffff;
   font-weight: 600;
   cursor: pointer;
 }
@@ -59,50 +61,76 @@
 .goalCard {
   background: rgba(255,255,255,0.08);
   border-radius: 14px;
-  padding: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+  cursor: pointer;
 }
 
 .goalHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
 }
 
 .goalDesc {
   font-size: 13px;
-  color: #cbd5e1;
-  margin: 6px 0;
+  color: #ccc;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.progressBar {
-  width: 100%;
-  height: 8px;
-  background: #1f2933;
-  border-radius: 999px;
+.progress {
+  height: 6px;
+  background: #222;
+  border-radius: 6px;
+  margin-top: 8px;
   overflow: hidden;
 }
 
 .progressFill {
   height: 100%;
-  background: linear-gradient(90deg, #2563eb 0%, #22c55e 100%);
+  background: linear-gradient(
+    90deg,
+    #3b82f6 0%,
+    #3b82f6 50%,
+    #22c55e 100%
+  );
   transition: width 0.3s ease;
 }
 
 .percent {
-  font-size: 14px;
-  font-weight: 600;
+  background: linear-gradient(90deg, #8a6b00, #ffd700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
 }
 
-.actions {
+.deadline {
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 6px;
+}
+
+.bigPercent {
+  font-size: 48px;
+  font-weight: 800;
+  background: linear-gradient(90deg, #8a6b00, #ffd700);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+
+.controls {
   display: flex;
-  gap: 8px;
-  margin-top: 8px;
+  gap: 12px;
+  margin: 16px 0;
 }
 
-.actions button {
+.controls button {
   flex: 1;
-  padding: 6px;
-  border-radius: 8px;
+  padding: 10px;
+  border-radius: 10px;
   border: none;
   cursor: pointer;
 }
@@ -113,8 +141,8 @@
 
 @keyframes shake {
   0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
+  25% { transform: translateX(-6px); }
+  50% { transform: translateX(6px); }
+  75% { transform: translateX(-6px); }
   100% { transform: translateX(0); }
 }
