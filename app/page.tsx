@@ -1,7 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styles from './auth.module.css'
+
+type Step = 'phone' | 'code' | 'goals'
 
 function formatPhone(value: string) {
   const digits = value.replace(/\D/g, '').slice(0, 11)
@@ -15,45 +17,27 @@ function formatPhone(value: string) {
   return result
 }
 
-type Step = 'phone' | 'code' | 'goals'
-
 export default function Page() {
   const [step, setStep] = useState<Step>('phone')
   const [phone, setPhone] = useState('+7')
   const [code, setCode] = useState('')
-  const [timer, setTimer] = useState(60)
-  const [pulse, setPulse] = useState(false)
-  const [shake, setShake] = useState(false)
+  const [goals, setGoals] = useState<string[]>([])
+  const [showModal, setShowModal] = useState(false)
+  const [newGoal, setNewGoal] = useState('')
 
   const phoneValid = phone.replace(/\D/g, '').length === 11
   const codeValid = code.length === 4
 
-  useEffect(() => {
-    if (step !== 'code') return
-    setTimer(60)
-
-    const interval = setInterval(() => {
-      setTimer((t) => (t > 0 ? t - 1 : 0))
-    }, 1000)
-
-    return () => clearInterval(interval)
-  }, [step])
-
-  useEffect(() => {
-    if (code.length === 0) return
-    setPulse(true)
-    const t = setTimeout(() => setPulse(false), 250)
-    return () => clearTimeout(t)
-  }, [code])
-
   function submitCode() {
-    if (!codeValid) {
-      setShake(true)
-      setTimeout(() => setShake(false), 400)
-      return
-    }
-
+    if (!codeValid) return
     setStep('goals')
+  }
+
+  function addGoal() {
+    if (!newGoal.trim()) return
+    setGoals([...goals, newGoal.trim()])
+    setNewGoal('')
+    setShowModal(false)
   }
 
   return (
@@ -67,7 +51,6 @@ export default function Page() {
 
           <input
             className={styles.input}
-            type="tel"
             value={phone}
             onChange={(e) => setPhone(formatPhone(e.target.value))}
           />
@@ -82,28 +65,16 @@ export default function Page() {
         </div>
 
         {/* CODE */}
-        <div
-          className={`${styles.step} ${
-            step === 'code' ? styles.active : styles.hidden
-          } ${shake ? styles.shake : ''}`}
-        >
+        <div className={`${styles.step} ${step === 'code' ? styles.active : styles.hidden}`}>
           <h1 className={styles.title}>Код из SMS</h1>
           <p className={styles.subtitle}>Мы отправили код на {phone}</p>
 
           <input
-            className={`${styles.input} ${styles.codeInput} ${pulse ? styles.pulse : ''}`}
-            inputMode="numeric"
+            className={styles.input}
             maxLength={4}
             value={code}
             onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
           />
-
-          <div className={styles.timer}>
-            {timer > 0
-              ? <>Отправить код повторно через <span>{timer} сек</span></>
-              : <span>Отправить код ещё раз</span>
-            }
-          </div>
 
           <button className={styles.button} onClick={submitCode}>
             Подтвердить
@@ -113,14 +84,53 @@ export default function Page() {
         {/* GOALS */}
         <div className={`${styles.step} ${step === 'goals' ? styles.active : styles.hidden}`}>
           <h1 className={styles.title}>Мои цели на 2026</h1>
-          <p className={styles.subtitle}>Пока тут пусто — давай начнём</p>
+          <p className={styles.subtitle}>
+            {goals.length === 0
+              ? 'Пока тут пусто — давай начнём'
+              : 'Твои цели на этот год'}
+          </p>
 
-          <button className={styles.button}>
-            + Добавить первую цель
+          {goals.map((goal, index) => (
+            <div key={index} className={styles.goalCard}>
+              {goal}
+            </div>
+          ))}
+
+          <button
+            className={styles.button}
+            onClick={() => setShowModal(true)}
+          >
+            + Добавить цель
           </button>
         </div>
-
       </div>
+
+      {/* MODAL */}
+      {showModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
+            <h2 className={styles.title}>Новая цель</h2>
+
+            <input
+              className={styles.input}
+              placeholder="Например: Купить дом"
+              value={newGoal}
+              onChange={(e) => setNewGoal(e.target.value)}
+            />
+
+            <button className={styles.button} onClick={addGoal}>
+              Сохранить
+            </button>
+
+            <button
+              className={styles.button}
+              onClick={() => setShowModal(false)}
+            >
+              Отмена
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
