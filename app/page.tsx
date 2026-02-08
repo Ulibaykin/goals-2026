@@ -21,6 +21,7 @@ export default function Page() {
   const [code, setCode] = useState('')
   const [timer, setTimer] = useState(60)
   const [pulse, setPulse] = useState(false)
+  const [shake, setShake] = useState(false)
 
   const phoneValid = phone.replace(/\D/g, '').length === 11
   const codeValid = code.length === 4
@@ -42,6 +43,16 @@ export default function Page() {
     const t = setTimeout(() => setPulse(false), 250)
     return () => clearTimeout(t)
   }, [code])
+
+  function submitCode() {
+    if (!codeValid) {
+      setShake(true)
+      setTimeout(() => setShake(false), 400)
+      return
+    }
+
+    alert('Следующий экран — цели')
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -68,7 +79,11 @@ export default function Page() {
         </div>
 
         {/* STEP 2 */}
-        <div className={`${styles.step} ${step === 'code' ? styles.active : styles.hidden}`}>
+        <div
+          className={`${styles.step} ${
+            step === 'code' ? styles.active : styles.hidden
+          } ${shake ? styles.shake : ''}`}
+        >
           <h1 className={styles.title}>Код из SMS</h1>
           <p className={styles.subtitle}>Мы отправили код на {phone}</p>
 
@@ -90,8 +105,7 @@ export default function Page() {
 
           <button
             className={styles.button}
-            disabled={!codeValid}
-            onClick={() => alert('Следующий экран — цели')}
+            onClick={submitCode}
           >
             Подтвердить
           </button>
