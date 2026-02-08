@@ -3,56 +3,42 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: radial-gradient(circle at top, #111, #000);
+  background: radial-gradient(circle at top, #111 0%, #000 70%);
   font-family: 'Inter', system-ui, sans-serif;
 }
 
 .card {
-  width: 100%;
-  max-width: 360px;
-  background: rgba(20, 20, 20, 0.9);
-  border-radius: 22px;
+  width: 340px;
   padding: 28px 24px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
-  animation: cardAppear 0.4s ease;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 18px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+  transition: transform 0.25s ease;
 }
 
-@keyframes cardAppear {
-  from {
-    opacity: 0;
-    transform: scale(0.97) translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+.card.shake {
+  animation: shake 0.4s ease;
 }
 
-/* -------- STEPS -------- */
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
 
 .step {
-  display: flex;
+  display: none;
   flex-direction: column;
-  gap: 16px;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-}
-
-.hidden {
-  opacity: 0;
-  transform: translateY(12px);
-  pointer-events: none;
-  visibility: hidden;
-  height: 0;
-  overflow: hidden;
+  gap: 14px;
 }
 
 .active {
-  opacity: 1;
-  transform: translateY(0);
-  visibility: visible;
+  display: flex;
 }
-
-/* -------- TEXT -------- */
 
 .title {
   color: #fff;
@@ -62,35 +48,36 @@
 }
 
 .subtitle {
-  color: #a1a1aa;
-  font-size: 14px;
+  color: #aaa;
+  font-size: 13px;
   text-align: center;
 }
 
-/* -------- INPUT -------- */
-
 .input {
-  height: 48px;
-  border-radius: 14px;
-  border: none;
+  height: 46px;
   padding: 0 14px;
-  font-size: 16px;
+  border-radius: 10px;
+  border: none;
   outline: none;
-  background: #fff;
-  color: #000;
+  font-size: 15px;
 }
 
-/* -------- BUTTON -------- */
+.codeInput {
+  text-align: center;
+  font-size: 22px;
+  letter-spacing: 6px;
+}
 
 .button {
-  height: 48px;
-  border-radius: 14px;
-  border: none;
+  height: 46px;
+  border-radius: 10px;
   background: #fff;
   color: #000;
-  font-size: 16px;
-  font-weight: 500;
+  font-weight: 600;
+  border: none;
   cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.2s ease;
 }
 
 .button:disabled {
@@ -98,47 +85,8 @@
   cursor: default;
 }
 
-/* -------- GOALS -------- */
-
-.goalCard {
-  background: rgba(255, 255, 255, 0.08);
-  border-radius: 16px;
-  padding: 16px;
-  color: #fff;
-  font-size: 16px;
-}
-
-/* -------- MODAL -------- */
-
-.modalOverlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.modal {
-  width: 90%;
-  max-width: 360px;
-  background: #111;
-  border-radius: 20px;
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  animation: modalAppear 0.25s ease;
-}
-
-@keyframes modalAppear {
-  from {
-    opacity: 0;
-    transform: scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
+.timer {
+  text-align: center;
+  font-size: 13px;
+  color: #888;
 }
