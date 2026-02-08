@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import styles from './auth.module.css'
 
 type Step = 'phone' | 'code' | 'goals' | 'add' | 'view'
@@ -13,6 +13,8 @@ type Goal = {
   completedAt?: string
 }
 
+const DEADLINE = new Date('2026-12-31T23:59:59')
+
 function formatPhone(value: string) {
   const digits = value.replace(/\D/g, '').slice(0, 11)
   let r = '+7'
@@ -21,6 +23,17 @@ function formatPhone(value: string) {
   if (digits.length >= 7) r += '-' + digits.slice(7, 9)
   if (digits.length >= 9) r += '-' + digits.slice(9, 11)
   return r
+}
+
+function timeLeft() {
+  const diff = DEADLINE.getTime() - Date.now()
+  if (diff <= 0) return 'Срок истёк'
+
+  const d = Math.floor(diff / 86400000)
+  const h = Math.floor((diff % 86400000) / 3600000)
+  const m = Math.floor((diff % 3600000) / 60000)
+
+  return `Осталось: ${d} д ${h} ч ${m} мин`
 }
 
 export default function Page() {
@@ -131,8 +144,10 @@ export default function Page() {
                   />
                 </div>
 
-                {g.progress === 100 && (
+                {g.progress === 100 ? (
                   <div className={styles.deadline}>Выполнено: {g.completedAt}</div>
+                ) : (
+                  <div className={styles.deadline}>⏳ {timeLeft()}</div>
                 )}
               </div>
             ))}
@@ -171,9 +186,7 @@ export default function Page() {
                   <button onClick={() => updateProgress(-10)}>-10</button>
                   <button onClick={() => updateProgress(10)}>+10</button>
                 </div>
-                <div className={styles.deadline}>
-                  ⏳ Осталось до 31.12.2026
-                </div>
+                <div className={styles.deadline}>⏳ {timeLeft()}</div>
               </>
             )}
 
