@@ -26,11 +26,7 @@ export default function Page() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.card}>
-        <div
-          className={`${styles.step} ${
-            step === 'phone' ? styles.active : styles.hidden
-          }`}
-        >
+        <div className={`${styles.step} ${step === 'phone' ? styles.active : styles.hidden}`}>
           <h1 className={styles.title}>ТВОИ ЦЕЛИ НА ГОД</h1>
           <p className={styles.subtitle}>трекер целей на год</p>
 
@@ -50,34 +46,18 @@ export default function Page() {
           </button>
         </div>
 
-        <div
-          className={`${styles.step} ${
-            step === 'code' ? styles.active : styles.hidden
-          }`}
-        >
+        <div className={`${styles.step} ${step === 'code' ? styles.active : styles.hidden}`}>
           <h1 className={styles.title}>Код из SMS</h1>
           <p className={styles.subtitle}>Мы отправили код на {phone}</p>
 
           <input
             className={styles.input}
-            type="text"
             inputMode="numeric"
             maxLength={4}
             value={code}
-            onChange={(e) =>
-              setCode(e.target.value.replace(/\D/g, ''))
-            }
+            onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
           />
 
           <button
             className={styles.button}
-            disabled={!codeValid}
-            onClick={() => alert('Следующий шаг — Supabase Auth')}
-          >
-            Подтвердить
-          </button>
-        </div>
-      </div>
-    </div>
-  )
-}
+            disabled={!c
