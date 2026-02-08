@@ -8,24 +8,25 @@
 
 .card {
   width: 360px;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(12px);
-  border-radius: 16px;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(14px);
+  border-radius: 18px;
   padding: 24px;
-  color: #fff;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .title {
   text-align: center;
   font-size: 22px;
-  margin-bottom: 8px;
 }
 
 .subtitle {
   text-align: center;
   font-size: 13px;
   color: #9ca3af;
-  margin-bottom: 16px;
 }
 
 .input, .textarea {
@@ -33,7 +34,6 @@
   padding: 12px;
   border-radius: 10px;
   border: none;
-  margin-bottom: 12px;
 }
 
 .textarea {
@@ -46,7 +46,7 @@
   padding: 12px;
   border-radius: 12px;
   border: none;
-  background: #fff;
+  background: #ffffff;
   font-weight: 600;
   cursor: pointer;
 }
@@ -57,15 +57,15 @@
 }
 
 .goalCard {
-  background: rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.08);
   border-radius: 14px;
   padding: 12px;
-  margin-bottom: 12px;
 }
 
 .goalHeader {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .goalDesc {
@@ -80,7 +80,6 @@
   background: #1f2933;
   border-radius: 999px;
   overflow: hidden;
-  margin: 6px 0;
 }
 
 .progressFill {
@@ -97,7 +96,7 @@
 .actions {
   display: flex;
   gap: 8px;
-  margin-top: 6px;
+  margin-top: 8px;
 }
 
 .actions button {
