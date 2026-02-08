@@ -91,4 +91,12 @@ export default function Page() {
           <button
             className={styles.button}
             disabled={!codeValid}
-            onClick={() => alert('Следующий
+            onClick={() => alert('Следующий экран — цели')}
+          >
+            Подтвердить
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
