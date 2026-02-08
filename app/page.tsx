@@ -19,12 +19,14 @@ type Step = 'phone' | 'code' | 'goals' | 'add-goal'
 
 export default function Page() {
   const [step, setStep] = useState<Step>('phone')
+
   const [phone, setPhone] = useState('+7')
   const [code, setCode] = useState('')
   const [timer, setTimer] = useState(60)
   const [shakeKey, setShakeKey] = useState(0)
 
   const [goalTitle, setGoalTitle] = useState('')
+  const [goalDescription, setGoalDescription] = useState('')
 
   const phoneValid = phone.replace(/\D/g, '').length === 11
   const codeValid = code.length === 4
@@ -46,6 +48,16 @@ export default function Page() {
       return
     }
 
+    setStep('goals')
+  }
+
+  function saveGoal() {
+    alert(
+      `Цель добавлена:\n\n${goalTitle}\n\n${goalDescription}`
+    )
+
+    setGoalTitle('')
+    setGoalDescription('')
     setStep('goals')
   }
 
@@ -106,7 +118,7 @@ export default function Page() {
           </div>
         )}
 
-        {/* GOALS EMPTY */}
+        {/* GOALS */}
         {step === 'goals' && (
           <div className={styles.step}>
             <h1 className={styles.title}>Мои цели на 2026</h1>
@@ -127,25 +139,26 @@ export default function Page() {
         {step === 'add-goal' && (
           <div className={styles.step}>
             <h1 className={styles.title}>Новая цель</h1>
-            <p className={styles.subtitle}>
-              Сформулируй её максимально ясно
-            </p>
 
             <input
               className={styles.input}
-              placeholder="Например: Запустить бизнес"
+              placeholder="Название цели"
               value={goalTitle}
               onChange={(e) => setGoalTitle(e.target.value)}
+            />
+
+            <textarea
+              className={styles.input}
+              style={{ height: 100, paddingTop: 12 }}
+              placeholder="Опиши цель подробнее: зачем она тебе, что изменится после её достижения"
+              value={goalDescription}
+              onChange={(e) => setGoalDescription(e.target.value)}
             />
 
             <button
               className={styles.button}
               disabled={!goalTitle.trim()}
-              onClick={() => {
-                alert('Цель добавлена (пока без сохранения)')
-                setGoalTitle('')
-                setStep('goals')
-              }}
+              onClick={saveGoal}
             >
               Сохранить цель
             </button>
