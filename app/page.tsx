@@ -67,4 +67,113 @@ export default function Page() {
       <div className={styles.card}>
 
         {/* PHONE */}
-        {step === 'pho
+        {step === 'phone' && (
+          <div className={`${styles.step} ${styles.active}`}>
+            <h1 className={styles.title}>ТВОИ ЦЕЛИ НА ГОД</h1>
+            <p className={styles.subtitle}>трекер целей на год</p>
+
+            <input
+              className={styles.input}
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(formatPhone(e.target.value))}
+            />
+
+            <button
+              className={styles.button}
+              disabled={!phoneValid}
+              onClick={() => setStep('code')}
+            >
+              Войти
+            </button>
+          </div>
+        )}
+
+        {/* CODE */}
+        {step === 'code' && (
+          <div
+            className={`${styles.step} ${styles.active} ${
+              shake ? styles.shake : ''
+            }`}
+          >
+            <h1 className={styles.title}>Код из SMS</h1>
+            <p className={styles.subtitle}>Мы отправили код на {phone}</p>
+
+            <input
+              className={`${styles.input} ${styles.codeInput} ${
+                pulse ? styles.pulse : ''
+              }`}
+              inputMode="numeric"
+              maxLength={4}
+              value={code}
+              onChange={(e) =>
+                setCode(e.target.value.replace(/\D/g, ''))
+              }
+            />
+
+            <div className={styles.timer}>
+              {timer > 0 ? (
+                <>
+                  Отправить код повторно через <span>{timer} сек</span>
+                </>
+              ) : (
+                <span>Отправить код ещё раз</span>
+              )}
+            </div>
+
+            <button className={styles.button} onClick={submitCode}>
+              Подтвердить
+            </button>
+          </div>
+        )}
+
+        {/* GOALS */}
+        {step === 'goals' && (
+          <div className={`${styles.step} ${styles.active}`}>
+            <h1 className={styles.title}>Мои цели на 2026</h1>
+            <p className={styles.subtitle}>
+              Пока тут пусто — давай начнём
+            </p>
+
+            <button
+              className={styles.button}
+              onClick={() => setStep('add-goal')}
+            >
+              + Добавить первую цель
+            </button>
+          </div>
+        )}
+
+        {/* ADD GOAL */}
+        {step === 'add-goal' && (
+          <div className={`${styles.step} ${styles.active}`}>
+            <h1 className={styles.title}>Новая цель</h1>
+            <p className={styles.subtitle}>
+              Сформулируй цель коротко и понятно
+            </p>
+
+            <input
+              className={styles.input}
+              placeholder="Например: Запустить свой проект"
+              value={goal}
+              onChange={(e) => setGoal(e.target.value)}
+            />
+
+            <button
+              className={styles.button}
+              disabled={goal.trim().length < 3}
+              onClick={() => {
+                alert(`Цель добавлена: ${goal}`)
+                setGoal('')
+                setStep('goals')
+              }}
+            >
+              Сохранить цель
+            </button>
+          </div>
+        )}
+
+      </div>
+    </div>
+  )
+}
