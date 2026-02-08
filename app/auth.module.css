@@ -55,6 +55,11 @@ textarea.input {
   background: #ffffff;
   color: #000000;
   font-weight: 500;
+  transition: transform .1s ease, box-shadow .1s ease;
+}
+
+.button:active {
+  transform: scale(0.97);
 }
 
 .button:disabled {
@@ -62,7 +67,7 @@ textarea.input {
   cursor: default;
 }
 
-/* ---------- GOALS LIST ---------- */
+/* ---------- GOALS ---------- */
 
 .goalCard {
   background: #ffffff;
@@ -109,7 +114,7 @@ textarea.input {
   height: 100%;
   background: #22c55e;
   border-radius: 999px;
-  transition: width 0.3s ease;
+  transition: width .3s ease;
 }
 
 .progressPercent {
@@ -120,15 +125,21 @@ textarea.input {
 /* ---------- GOAL VIEW ---------- */
 
 .progressBig {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: 700;
   text-align: center;
-  margin: 12px 0;
+  margin: 8px 0;
 }
 
 .progressButtons {
   display: flex;
   gap: 12px;
+}
+
+.deadline {
+  text-align: center;
+  font-size: 13px;
+  color: #9ca3af;
 }
 
 /* ---------- CODE ---------- */
