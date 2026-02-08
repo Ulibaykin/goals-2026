@@ -9,6 +9,7 @@ type Goal = {
   id: number
   title: string
   description: string
+  progress: number
 }
 
 function formatPhone(value: string) {
@@ -62,11 +63,29 @@ export default function Page() {
       id: Date.now(),
       title: goalTitle.trim(),
       description: goalDescription.trim(),
+      progress: 0,
     }
     setGoals(prev => [newGoal, ...prev])
     setGoalTitle('')
     setGoalDescription('')
     setStep('goals')
+  }
+
+  function updateProgress(delta: number) {
+    if (!activeGoal) return
+
+    const newProgress = Math.min(
+      100,
+      Math.max(0, activeGoal.progress + delta)
+    )
+
+    setGoals(prev =>
+      prev.map(g =>
+        g.id === activeGoal.id ? { ...g, progress: newProgress } : g
+      )
+    )
+
+    setActiveGoal({ ...activeGoal, progress: newProgress })
   }
 
   return (
@@ -106,6 +125,18 @@ export default function Page() {
               >
                 <div className={styles.goalTitle}>{goal.title}</div>
                 <div className={styles.goalDescription}>{goal.description}</div>
+
+                <div className={styles.progressRow}>
+                  <div className={styles.progressBar}>
+                    <div
+                      className={styles.progressFill}
+                      style={{ width: `${goal.progress}%` }}
+                    />
+                  </div>
+                  <div className={styles.progressPercent}>
+                    {goal.progress}%
+                  </div>
+                </div>
               </div>
             ))}
 
@@ -128,7 +159,19 @@ export default function Page() {
           <div className={styles.step}>
             <h1 className={styles.title}>{activeGoal.title}</h1>
             <p className={styles.subtitle}>{activeGoal.description}</p>
-            <button className={styles.button} onClick={() => setStep('goals')}>Назад</button>
+
+            <div className={styles.progressBig}>
+              {activeGoal.progress}%
+            </div>
+
+            <div className={styles.progressButtons}>
+              <button className={styles.button} onClick={() => updateProgress(-10)}>-10%</button>
+              <button className={styles.button} onClick={() => updateProgress(10)}>+10%</button>
+            </div>
+
+            <button className={styles.button} onClick={() => setStep('goals')}>
+              Назад
+            </button>
           </div>
         )}
 
