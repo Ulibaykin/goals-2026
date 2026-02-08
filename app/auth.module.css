@@ -1,150 +1,104 @@
-/* ===============================
-   SAFE BASE (CSS MODULES FRIENDLY)
-   =============================== */
-
+/* ===== BASE RESET (SAFE FOR CSS MODULES) ===== */
 .wrapper {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-
-  background: radial-gradient(
-    1200px 600px at top,
-    #1c2533 0%,
-    #0b0f15 60%,
-    #06080d 100%
-  );
-
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Inter, Helvetica, Arial, sans-serif;
-
+  background: radial-gradient(1200px 600px at 50% 0%, #1e293b, #020617);
   padding: 16px;
+  box-sizing: border-box;
 }
 
-/* ===============================
-   CARD
-   =============================== */
-
+/* ===== CARD ===== */
 .card {
   width: 100%;
   max-width: 360px;
-
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-
-  border-radius: 20px;
-  padding: 24px 20px;
-
-  box-shadow:
-    0 20px 60px rgba(0, 0, 0, 0.6),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
-
-  color: #ffffff;
+  background: rgba(30, 41, 59, 0.92);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
-/* ===============================
-   TYPOGRAPHY
-   =============================== */
+/* ===== STEP VISIBILITY ===== */
+.step {
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+}
 
+.active {
+  display: flex;
+}
+
+.hidden {
+  display: none;
+}
+
+/* ===== TITLES ===== */
 .title {
   text-align: center;
   font-size: 20px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  margin-bottom: 6px;
+  font-weight: 700;
+  color: #ffffff;
 }
 
 .subtitle {
   text-align: center;
   font-size: 13px;
-  opacity: 0.65;
-  margin-bottom: 20px;
+  color: #94a3b8;
 }
 
-/* ===============================
-   INPUTS & BUTTONS
-   =============================== */
-
+/* ===== INPUTS ===== */
 .input {
   width: 100%;
   height: 44px;
-
   border-radius: 12px;
   border: none;
-  outline: none;
-
   padding: 0 14px;
   font-size: 15px;
-
-  background: #ffffff;
-  color: #000000;
-
-  margin-bottom: 14px;
+  box-sizing: border-box;
 }
 
-.input::placeholder {
-  color: #888;
+.codeInput {
+  text-align: center;
+  letter-spacing: 6px;
+  font-size: 18px;
 }
 
+/* ===== BUTTONS ===== */
 .button {
   width: 100%;
   height: 44px;
-
   border-radius: 12px;
   border: none;
-  cursor: pointer;
-
-  font-size: 15px;
-  font-weight: 500;
-
   background: #ffffff;
-  color: #000000;
-
-  transition: transform 0.15s ease, opacity 0.15s ease;
-}
-
-.button:active {
-  transform: scale(0.97);
+  color: #020617;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
 }
 
 .button:disabled {
-  opacity: 0.4;
+  opacity: 0.5;
   cursor: default;
 }
 
-/* ===============================
-   STEPS ANIMATION
-   =============================== */
-
-.step {
-  transition: opacity 0.3s ease, transform 0.3s ease;
+/* ===== TIMER ===== */
+.timer {
+  text-align: center;
+  font-size: 12px;
+  color: #cbd5f5;
 }
 
-.active {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.hidden {
-  opacity: 0;
-  transform: translateY(12px);
-  pointer-events: none;
-  position: absolute;
-}
-
-/* ===============================
-   SHAKE (ERROR)
-   =============================== */
-
+/* ===== SHAKE ===== */
 @keyframes shake {
   0% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  50% { transform: translateX(4px); }
-  75% { transform: translateX(-4px); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
   100% { transform: translateX(0); }
 }
 
@@ -152,75 +106,115 @@
   animation: shake 0.4s;
 }
 
-/* ===============================
-   GOALS LIST
-   =============================== */
-
+/* ===== GOALS LIST ===== */
 .goalCard {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255,255,255,0.04);
   border-radius: 14px;
   padding: 14px;
-  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* HEADER */
+.goalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 .goalTitle {
-  font-size: 14px;
-  font-weight: 500;
-  margin-bottom: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #ffffff;
+  max-width: 75%;
 }
 
-.goalDescription {
-  font-size: 12px;
-  opacity: 0.7;
+.goalPercent {
+  font-size: 13px;
+  font-weight: 700;
+  color: #eab308;
+}
 
+/* DESCRIPTION */
+.goalDesc {
+  font-size: 13px;
+  color: #cbd5f5;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* ===============================
-   PROGRESS
-   =============================== */
-
-.progressBar {
+/* PROGRESS BAR */
+.progressTrack {
+  width: 100%;
   height: 6px;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  background: rgba(255,255,255,0.1);
   overflow: hidden;
-  margin-top: 8px;
 }
 
 .progressFill {
   height: 100%;
+  border-radius: 4px;
   transition: width 0.3s ease;
   background: linear-gradient(
     90deg,
-    #1e4fff 0%,
-    #1e4fff 50%,
-    #00ff6a 100%
+    #2563eb 0%,
+    #2563eb 50%,
+    #22c55e 100%
   );
 }
 
-/* ===============================
-   DEADLINE
-   =============================== */
-
+/* DEADLINE */
 .deadline {
-  font-size: 11px;
-  opacity: 0.7;
-  margin-top: 8px;
+  font-size: 12px;
+  color: #cbd5f5;
+  text-align: left;
+}
+
+/* ===== GOAL CARD (DETAIL) ===== */
+.goalDetailPercent {
   text-align: center;
+  font-size: 36px;
+  font-weight: 800;
+  background: linear-gradient(90deg, #ca8a04, #facc15);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* ===============================
-   SUCCESS
-   =============================== */
+/* +/- BUTTONS */
+.progressControls {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
 
-.trophy {
+.progressBtn {
+  flex: 1;
+  height: 42px;
+  border-radius: 12px;
+  border: none;
   font-size: 18px;
+  font-weight: 700;
+  background: #ffffff;
+  color: #020617;
 }
 
-.completed {
-  color: #00ff6a;
+/* DETAIL TIMER */
+.detailTimer {
+  text-align: center;
+  font-size: 13px;
+  color: #cbd5f5;
+}
+
+/* BACK */
+.backBtn {
+  width: 100%;
+  height: 44px;
+  border-radius: 12px;
+  border: none;
+  background: #ffffff;
+  font-weight: 600;
 }
